@@ -1,0 +1,58 @@
+#include <iostream>
+#include <vector>
+#include <set>
+ 
+using namespace std;
+ 
+void dakstra (vector <vector <pair <int, int>>> &g, set< pair<int, int> > &sEdges,
+        vector<int> &dist) {
+    dist[0] = 0;
+    sEdges.emplace(dist[0], 0);
+    while (!sEdges.empty()) {
+        int from = sEdges.begin()->second;
+        sEdges.erase(sEdges.begin());
+        for (auto & edge : g[from]) {
+            int to = edge.first;
+            int weight = edge.second;
+            if (dist[from] + weight < dist[to]) {
+                sEdges.erase({dist[to], to});
+                dist[to] = dist[from] + weight;
+                sEdges.emplace(dist[to], to);
+            }
+        }
+    }
+}
+ 
+int main() {
+     
+    freopen("pathbgep.in", "r", stdin);
+    freopen("pathbgep.out", "w", stdout);
+ 
+    int V, E;
+    cin >> V >> E;
+ 
+    vector <vector <pair <int, int>>> g(V);
+    vector <int> dist(V);
+    set <pair<int, int>> sEdges;
+ 
+    const int INF = 100000000;
+ 
+    for (int i = 0; i < V; i++) {
+        dist[i] = INF;
+    }
+ 
+    for (int i = 0; i < E; i++) {
+        int from, to, weight;
+        cin >> from >> to >> weight;
+        g[from - 1].emplace_back(to - 1, weight);
+        g[to - 1].emplace_back(from - 1, weight);
+    }
+ 
+    dakstra(g, sEdges, dist);
+ 
+    for (int weight : dist) {
+        cout << weight << " ";
+    }
+ 
+    return 0;
+}
