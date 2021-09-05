@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+int invert(int c)
+{
+    return (c == 1) ? 2 : 1;
+}
+void Check_Bipart(vector<vector<int>>& g, vector<int>& color, string& ans, int s, int c)
+{
+    color[s] = c;
+    for (int i = 0; i < g[s].size(); ++i)
+    {
+        int to = g[s][i];
+        if (color[to] == 0)
+        {
+            Check_Bipart(g, color, ans, to, invert(c));
+        }
+        else if (color[to] == color[s])
+        {
+            ans = "NO";
+        }
+    }
+}
+ 
+int main(){
+ 
+    freopen("bipartite.in", "r", stdin);
+    freopen("bipartite.out", "w", stdout);
+ 
+    int n, m;
+    cin >> n >> m;
+ 
+    vector<vector<int>> g(n + 1, vector<int>());
+    vector<int> color(n + 1, 0);
+    string ans = "YES";
+ 
+    int a, b;
+    for (int i = 0; i < m; ++i)
+    {
+        std::cin >> a >> b;
+        g[a].push_back(b);
+        g[b].push_back(a);
+    }
+    for (int i = 1; i < n + 1 and ans == "YES"; ++i)
+    {
+        if (color[i] == 0)
+            Check_Bipart(g, color, ans, i, 1);
+    }
+ 
+    std::cout << ans;
+    return 0;
+}
