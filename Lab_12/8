@@ -1,0 +1,43 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+int main() {
+ 
+    int count;
+ 
+    cin >> count;
+ 
+    if (count == 1) {
+        cout << 0;
+        exit(0);
+    }
+     
+    else {
+        const int module = 1e9;
+        vector<int> colors(count);
+        vector<vector<int> > pd(count, vector<int> (count, 0));
+ 
+        for (int i = 0; i < count; ++i)
+        {
+            cin >> colors[i];
+            pd[i][i] = 1;
+        }
+ 
+        for (int i = 1; i < count; ++i)
+        {
+            for (int j = 0; i + j < count; ++j)
+            {
+                if (colors[j] == colors[j + i])
+                    pd[j][j + i] = (pd[j + 1][j + i] % module + pd[j][j + i - 1] % module + 1) % module;
+                else
+                    pd[j][j + i] = (pd[j + 1][j + i] % module + pd[j][j + i - 1] % module - pd[j + 1][j + i - 1] % module) % module;
+            }
+        }
+ 
+       cout << (pd[0][count - 1] + module) % module;
+    }
+ 
+    return 0;
+}
