@@ -1,0 +1,34 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+vector<int> GetPrefix(string & s) {
+    vector <int> r(s.length());
+    r[0] = 0;
+    for (int i = 1; i < s.length(); i++) {
+        int k = r[i - 1];
+        while (k > 0 && s[i] != s[k]) {
+            k = r[k - 1];
+        }
+        if (s[i] == s[k]) {
+            r[i] = k + 1;
+        }
+        else {
+            r[i] = k;
+        }
+    }
+    return r;
+}
+ 
+int main() {
+    freopen("prefix.in", "r", stdin);
+    freopen("prefix.out", "w", stdout);
+    string str;
+    cin >> str;
+    vector <int> answer = GetPrefix(str);
+    for (int i : answer) {
+        cout << i << " ";
+    }
+ 
+    return 0;
