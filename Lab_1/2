@@ -1,0 +1,11 @@
+#include <iostream>
+using namespace std;
+ 
+int main() {
+    freopen("aplusbb.in", "r", stdin);
+    freopen("aplusbb.out", "w", stdout);
+    long long int A, B;
+    cin >> A >> B;
+    cout << A + B*B << endl;
+    return 0;
+}
