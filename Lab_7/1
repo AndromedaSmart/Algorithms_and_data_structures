@@ -1,0 +1,71 @@
+#include<fstream>
+ 
+using namespace std;
+ 
+struct SearchTree
+{
+    SearchTree* parent = NULL;
+    SearchTree* leftKid = NULL;
+    SearchTree* rightKid = NULL;
+    int height = 0;
+};
+ 
+int max(int a, int b) {
+    if (a > b) return a;
+    else return b;
+}
+ 
+void Height(SearchTree* Elem) {
+    if (Elem == NULL) return;
+    if (Elem->rightKid == NULL && Elem->leftKid == NULL) {
+        Elem->height = 0;
+        return;
+    }
+    Height(Elem->leftKid); Height(Elem->rightKid);
+ 
+    if (Elem->rightKid == NULL) Elem->height = Elem->leftKid->height + 1;
+    else if (Elem->leftKid == NULL) Elem->height = Elem->rightKid->height + 1;
+    else Elem->height = max(Elem->leftKid->height, Elem->rightKid->height) + 1;
+    return;
+}
+ 
+int balance(SearchTree* Elem) {
+    if (Elem->rightKid == NULL && Elem->leftKid == NULL) return 0;
+    if (Elem->leftKid == NULL) return Elem->rightKid->height + 1;
+    else if (Elem->rightKid == NULL) return -Elem->leftKid->height - 1;
+    else return Elem->rightKid->height - Elem->leftKid->height;
+}
+ 
+int main()
+{
+    SearchTree* tree = new SearchTree[200001];
+    int N, key, leftKid, rightKid;
+    fstream in, out;
+    in.open("balance.in", ios::in);
+    in >> N;
+    for (int i = 1; i <= N; i++)
+    {
+        in >> key >> leftKid >> rightKid;
+        //tree[i].key = key;
+        if (leftKid != 0) {
+            tree[i].leftKid = &tree[leftKid];
+            tree[leftKid].parent = &tree[i];
+        }
+        if (rightKid != 0) {
+            tree[i].rightKid = &tree[rightKid];
+            tree[rightKid].parent = &tree[i];
+        }
+    }
+ 
+    Height(tree + 1);
+ 
+    in.close();
+ 
+    out.open("balance.out", ios::out);
+    for (int i = 1; i <= N; i++) {
+        out << balance(&tree[i]) << '\n';
+    }
+    out.close();
+ 
+    return 0;
+}
