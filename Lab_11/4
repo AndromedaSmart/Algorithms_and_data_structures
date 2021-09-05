@@ -1,0 +1,42 @@
+
+void dfs(long long v, vector<int>& vis) {
+    vis[v] = 1;
+    for (auto & i : graph[v]) {
+        if (!vis[i.to])
+            dfs(i.to, vis);
+    }
+}
+ 
+int main() {
+    ifstream fin("path.in");
+    ofstream fout("path.out");
+ 
+    long long n, m, first, x, y, len;
+    fin >> n >> m >> first;
+    first--;
+    graph.resize(n);
+    for (int i = 0; i < m; i++) {
+        fin >> x >> y >> len;
+        graph[--x].push_back({len, --y});
+    }
+    vector<long long> d = Bellman_Ford(n, first);
+    vector<int> vis(n);
+ 
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < graph[i].size(); j++) {
+            long long to = graph[i][j].to;
+            long long dist = graph[i][j].len;
+            if ((d[i] < LONG_LONG_MAX) && (d[to] > d[i] + dist) && !vis[to])
+                dfs(to, vis);
+        }
+    }
+ 
+    for (int i = 0; i < n; i++)
+        if (d[i] == LONG_LONG_MAX)
+            fout << "*" << endl;
+        else if (vis[i] || d[i] < -5e18)
+            fout << "-" << endl;
+        else
+            fout << d[i] << endl;
+    return 0;
+}
