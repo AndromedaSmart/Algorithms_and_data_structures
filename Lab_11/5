@@ -1,0 +1,78 @@
+#include <fstream>
+#include <vector>
+#include <algorithm>
+ 
+const int INF = 100000000;
+ 
+struct Edge {
+    int from;
+    int to;
+    int weight;
+};
+ 
+void ford(std::vector<Edge> &g, std::vector<int> &dist, std::vector<int> &parent, int &start) {
+    dist[0] = 0;
+    for (int i = 0; i < dist.size(); i++) {
+        start = -1;
+        for (Edge edge : g) {
+            if (dist[edge.to] > dist[edge.from] + edge.weight) {
+                dist[edge.to] = dist[edge.from] + edge.weight;
+                parent[edge.to] = edge.from;
+                start = edge.to;
+            }
+        }
+    }
+}
+ 
+int main () {
+    std::ifstream fin("negcycle.in");
+    std::ofstream fout("negcycle.out");
+ 
+    int V;
+    fin >> V;
+ 
+    int start = -1;
+    std::vector<Edge> g(V);
+    std::vector<int> dist(V);
+    std::vector<int> parent(V);
+ 
+    for (int i = 0; i < V; i++) {
+        dist[i] = INF;
+    }
+ 
+    for (int from = 0; from < V; from++) {
+        for (int to = 0; to < V; to++) {
+            int weight;
+            fin >> weight;
+            g.push_back({ from, to, weight });
+        }
+    }
+ 
+    ford(g, dist, parent, start);
+ 
+    if (start != -1) {
+        std::vector<int> way;
+        int end = start;
+ 
+        for (int i = 0; i < V; i++) {
+            end = parent[end];
+        }
+ 
+        for (int cur = end; cur != end || way.empty(); cur = parent[cur]) {
+            way.push_back(cur);
+        }
+ 
+        way.push_back(end);
+        reverse(way.begin(), way.end());
+ 
+        fout << "YES" << std::endl;
+        fout << way.size() << std::endl;
+ 
+        for (int vertex : way)
+            fout << vertex + 1 << ' ';
+    } 
+    else {
+        fout << "NO";
+    }
+    return 0;
+}
