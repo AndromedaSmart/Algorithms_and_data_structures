@@ -1,0 +1,54 @@
+#include <fstream>
+using namespace std;
+ 
+struct Stack {
+    long b;
+    Stack *last;
+};
+ 
+Stack* add(long b, Stack* last) {
+    Stack* B = (Stack*)malloc(sizeof(Stack));
+    B->b = b;
+    B->last = last;
+    return B;
+}
+ 
+int main() {
+ 
+    ifstream fin("postfix.in");
+    ofstream fout("postfix.out");
+ 
+    char k;
+    Stack* A = NULL;
+    while (fin >> k){
+        if (k == '+') {
+            if (A==NULL||A->last==NULL)
+                break;
+ 
+            A->last->b = A->b + A->last->b;
+            A = A->last;
+        }
+ 
+        else if (k == '-') {
+            if (A==NULL||A->last==NULL)
+                break;
+            A->last->b = A->last->b-A->b;
+            A = A->last;
+        }
+ 
+        else if (k == '*') {
+            if (A==NULL||A->last==NULL)
+                break;
+            A->last->b = A->b*A->last->b;
+            A = A->last;
+        }
+ 
+        else if ((int)k>=48 && (int)k<=57) {
+            A = add((int)k - 48, A);
+        }
+    }
+ 
+    fout << A->b;
+ 
+    return 0;
+}
