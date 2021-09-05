@@ -1,0 +1,77 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+vector <pair<string, string>> HashTable[100001];
+ 
+unsigned Find(vector <pair<string, string>> a, const string & b) {
+    for (unsigned i = 0; i < a.size(); i++)
+        if (a[i].first == b)
+            return i;
+ 
+    return 0;
+}
+ 
+int GetElement(string key) {
+    int hashValue = 0;
+ 
+    for (char i : key) {
+        hashValue = 13 * hashValue + (int)i;
+    }
+ 
+    return abs(hashValue % 100001);
+}
+ 
+int main() {
+ 
+    freopen("map.in", "r", stdin);
+    freopen("map.out", "w", stdout);
+ 
+    string Net;
+ 
+    while (cin >> Net) {
+ 
+        if (Net == "put") {
+            string one, two;
+            cin >> one >> two;
+            long i = GetElement(one);
+            unsigned b = Find(HashTable[i], one);
+ 
+            if (!HashTable[i].empty() && HashTable[i][b].first == one)
+                HashTable[i][b].second = two;
+ 
+            if (HashTable[i].empty() || HashTable[i][b].first != one)
+                HashTable[i].emplace_back(one, two);
+        }
+ 
+        if (Net == "delete") {
+            string one;
+            cin >> one;
+            long i = GetElement(one);
+            unsigned b = Find(HashTable[i], one);
+ 
+            if (!HashTable[i].empty() && HashTable[i][b].first == one) {
+                swap(HashTable[i][b], HashTable[i][HashTable[i].size() - 1]);
+                HashTable[i].pop_back();
+            }
+        }
+ 
+        if (Net == "get") {
+            string one;
+            cin >> one;
+            long i = GetElement(one);
+            unsigned b = Find(HashTable[i], one);
+ 
+            if (!HashTable[i].empty() && HashTable[i][b].first == one) {
+                cout << HashTable[i][b].second << '\n';
+            }
+ 
+            else {
+                cout << "none\n";
+            }
+        }
+    }
+ 
+    return 0;
+}
