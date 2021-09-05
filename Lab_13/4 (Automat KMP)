@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+void GetPrefix(string& s, vector<int>& r) {
+    r[0] = 0;
+    for (int i = 1; i < s.length(); i++) {
+        int k = r[i - 1];
+        while (k > 0 && s[i] != s[k]) {
+            k = r[k - 1];
+        }
+ 
+        if (s[i] == s[k]) {
+            r[i] = k + 1;
+        }
+ 
+        else {
+            r[i] = k;
+        }
+    }
+}
+ 
+void KMP(string& str, int power, vector<vector<int>>& r) {
+    int len = str.length();
+    vector<int> prefix(str.length());
+    GetPrefix(str, prefix);
+ 
+    for (int q = 0; q <= len; q++)
+        for (int sym = 0; sym < power; sym++) {
+            if (q > 0 && char(97 + sym) != str[q]) {
+                r[q][sym] = r[prefix[q - 1]][sym];
+            }
+            else if (char(97 + sym) == str[q]) {
+                r[q][sym] = q + 1;
+            }
+            else {
+                r[q][sym] = q;
+            }
+        }
+}
+ 
+int main() {
+    string str;
+    int power;
+    cin >> power >> str;
+    vector<vector<int>> r(str.length() + 1, vector<int>(power));
+    KMP(str, power, r);
+    for (int i = 0; i <= str.length(); i++) {
+        for (int j = 0; j < power; j++) {
+            cout << r[i][j] << " ";
+        }
+        cout << endl;
+    }
+ 
+    return 0;
+}
