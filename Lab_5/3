@@ -1,0 +1,191 @@
+#include <iostream>
+ 
+using namespace std;
+ 
+struct Node {
+    int key;
+    Node* left = nullptr;
+    Node* right = nullptr;
+    Node(int key): key(key) {
+    }
+};
+ 
+Node* minimum(Node* x) {
+ 
+    if (x -> left == nullptr)
+    {
+        return x;
+    }
+    return minimum(x -> left);
+}
+ 
+Node* Insert(Node* r, int x) {
+ 
+    if (r == nullptr) {
+        return new Node(x);
+    }
+ 
+    else {
+        if (x < r -> key) {
+            r -> left  = Insert(r -> left, x);
+        }
+ 
+        else {
+            if (x > r -> key) {
+                r -> right = Insert(r -> right, x);
+            }
+        }
+    }
+    return r;
+}
+ 
+Node* Exists(Node* r, int x) {
+ 
+    if (r == nullptr || x == r -> key) {
+        return r;
+    }
+ 
+    if (x < r -> key) {
+        return Exists(r -> left, x);
+    }
+ 
+    else {
+        return Exists(r -> right, x);
+    }
+}
+ 
+Node* Next(Node* r, int x) {
+ 
+    Node* current = r;
+    Node* successor = nullptr;
+    while (current != nullptr) {
+ 
+        if (current -> key > x) {
+            successor = current;
+            current = current -> left;
+        }
+ 
+        else {
+            current = current -> right;
+        }
+    }
+ 
+    return successor;
+}
+ 
+Node* Prev(Node* r, int x) {
+ 
+    Node* current = r;
+    Node* successor = nullptr;
+    while (current != nullptr) {
+ 
+        if (current -> key < x) {
+            successor = current;
+            current = current -> right;
+        }
+ 
+        else {
+            current = current -> left;
+        }
+    }
+    return successor;
+ 
+}
+ 
+Node* Delete(Node* r, int x) {
+ 
+    if (r == nullptr) {
+        return r;
+    }
+ 
+    if (x < r -> key) {
+        r -> left = Delete(r -> left, x);
+    }
+ 
+    else {
+        if (x > r -> key) {
+            r -> right = Delete(r -> right, x);
+        }
+ 
+        else {
+            if (r -> left != nullptr && r -> right != nullptr) {
+                r -> key = minimum(r -> right) -> key;
+                r -> right = Delete(r -> right, r -> key);
+            }
+ 
+            else {
+                if (r -> left != nullptr) {
+                    r = r -> left;
+                }
+ 
+                else {
+                    if (r -> right != nullptr) {
+                        r = r -> right;
+                    }
+ 
+                    else {
+                        r = nullptr;
+                    }
+                }
+            }
+        }
+    }
+    return r;
+ 
+}
+ 
+int main() {
+     
+    freopen("bstsimple.in", "r", stdin);
+    freopen("bstsimple.out", "w", stdout);
+ 
+    Node* y = nullptr;
+    string t;
+    int x;
+    while (cin >> t) {
+ 
+        cin >> x;
+ 
+        if (t == "insert") {
+            y = Insert(y, x);
+        }
+ 
+        if (t == "exists") {
+            if (Exists(y, x) == nullptr)
+            {
+                cout << "false" << "\n";
+            }
+ 
+            else {
+                cout << "true" << "\n";
+            }
+        }
+ 
+        if (t == "next") {
+            if (Next(y, x) == nullptr)
+            {
+                cout << "none" << "\n";
+            }
+ 
+            else {
+                cout << Next(y, x) -> key << "\n";
+            }
+        }
+ 
+        if (t == "prev") {
+            if (Prev(y, x) == nullptr) {
+                cout << "none" << "\n";
+            }
+ 
+            else {
+                cout << Prev(y, x) -> key << "\n";
+            }
+        }
+ 
+        if (t == "delete") {
+            y = Delete(y, x);
+        }
+    }
+    return 0;
+ 
+}
