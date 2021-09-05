@@ -1,0 +1,31 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+vector <int> StringMatcher(string a, string sub) {
+    int al = a.length();
+    int sl = sub.length();
+    vector <int> answer;
+    for (int i = 0; i <= al - sl; i++) {
+        if (a.substr(i, sl) == sub) {
+            answer.push_back(i + 1);
+        }
+    }
+    return answer;
+}
+ 
+int main()
+{
+    freopen("search1.in", "r", stdin);
+    freopen("search1.out", "w", stdout);
+ 
+    string b, bs;
+    cin >> bs >> b;
+    vector <int> v = StringMatcher(b, bs);
+    cout << v.size() << endl;
+    for (int i = 0; i < v.size(); i++) {
+        cout << v[i] << " ";
+    }
+    return 0;
+}
