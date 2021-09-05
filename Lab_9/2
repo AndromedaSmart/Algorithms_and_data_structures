@@ -1,0 +1,76 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+void Find_cycle(vector<vector<int>>& g, vector<char>& visited, vector<int>& way, int s, string& ans, char color)
+{
+    visited[s] = color;
+    way.push_back(s);
+    for (int i = 0; i < g[s].size(); ++i)
+    {
+        int to = g[s][i];
+        if (visited[to] == 'G')
+        {
+            ans = "YES";
+            Find_cycle(g, visited, way, to, ans, 'B');
+        }
+        else if (visited[to] == 'W')
+        {
+            Find_cycle(g, visited, way, to, ans, 'G');
+        }
+    }
+    visited[s] = 'B';
+}
+int main()
+{
+    freopen("cycle.in", "r", stdin);
+    freopen("cycle.out", "w", stdout);
+ 
+    int n, m;
+    cin >> n >> m;
+ 
+    vector<vector<int>> g(n + 1, vector<int>());
+    vector<char> visited(n + 1, 'W');
+    vector<int> way;
+    string ans = "NO";
+ 
+    int a, b;
+    for (int i = 0; i < m; i++)
+    {
+        cin >> a >> b;
+        g[a].push_back(b);
+    }
+ 
+    for (int i = 1; i < n + 1 and ans == "NO"; ++i)
+    {
+        if (visited[i] == 'W')
+        {
+            Find_cycle(g, visited, way, i, ans, 'G');
+        }
+    }
+ 
+    if (ans == "NO")
+    {
+        cout << "NO";
+        return 0;
+    }
+ 
+    int start = 0, finish = way.size() - 1;
+    for (int i = way.size() - 1; i > 0 and way[start] != way[finish]; --i)
+    {
+        finish = i;
+        for (int j = i - 1; j >= 0; --j)
+        {
+            if (way[finish] == way[j])
+            {
+                start = j;
+                break;
+            }
+        }
+    }
+    cout << ans << '\n';
+    for (int i = start; i < finish; ++i)
+        cout << way[i] << " ";
+    return 0;
+}
