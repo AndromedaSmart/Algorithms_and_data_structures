@@ -1,0 +1,36 @@
+#include <fstream>
+using namespace std;
+  
+struct Stack {
+    long a;
+    Stack *l;
+};
+  
+Stack* add(long a, Stack* l) {
+    Stack* B = (Stack*)malloc(sizeof(Stack));
+    B->a = a;
+    B->l = l;
+    return B;
+}
+  
+int main() {
+    ifstream fin("stack.in");
+    ofstream fout("stack.out");
+    long n;
+    fin >> n;
+    char M;
+    long a;
+    Stack* A;
+    for (int i = 0; i < n; i++) {
+        fin >> M;
+ 
+        if (M == '+') {
+            fin >> a;
+            A = add(a, A);
+        }
+        else {
+            fout << A->a << "\n";
+            A = A->l;
+        }
+    }
+}
