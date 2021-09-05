@@ -1,0 +1,60 @@
+#include <fstream>
+#include <vector>
+ 
+using namespace std;
+ 
+vector <long> HashTable[1000001];
+ 
+unsigned Find(vector <long> a, long b) {
+    for (unsigned i = 0; i < a.size(); i++)
+        if (a[i] == b)
+            return i;
+ 
+    return 0;
+}
+ 
+int main() {
+ 
+    ifstream fin("set.in");
+    ofstream fout("set.out");
+ 
+    string Net;
+    while (fin >> Net) {
+        if (Net == "insert") {
+            long b;
+            fin >> b;
+            long i = abs(b % 1000001);
+            unsigned c = Find(HashTable[i], b);
+            if (HashTable[i].empty() || HashTable[i][c] != b)
+                HashTable[i].push_back(b);
+        }
+ 
+        else if (Net == "delete") {
+            long b;
+            fin >> b;
+            long i = abs(b % 1000001);
+            unsigned c = Find(HashTable[i], b);
+ 
+            if (!HashTable[i].empty() && HashTable[i][c] == b) {
+                swap(HashTable[i][c], HashTable[i][HashTable[i].size() - 1]);
+                HashTable[i].pop_back();
+            }
+        }
+ 
+        else if (Net == "exists") {
+            long b;
+            fin >> b;
+            long i = abs(b % 1000001);
+            unsigned c = Find(HashTable[i], b);
+            if (!HashTable[i].empty() && HashTable[i][c] == b) {
+                fout << "true \n";
+            }
+ 
+            else {
+                fout << "false \n";
+            }
+        }
+    }
+    return 0;
+ 
+}
