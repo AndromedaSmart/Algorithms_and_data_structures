@@ -1,0 +1,44 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+ 
+using namespace std;
+ 
+int main() {
+     
+    freopen("pathbge1.in", "r", stdin);
+    freopen("pathbge1.out", "w", stdout);
+ 
+    int n, m;
+    cin >> n >> m;
+ 
+    vector <int> vec[n];
+ 
+    for (int i = 0; i < m; i++) {
+        int b, e;
+        cin >> b >> e;
+        vec[b - 1].push_back(e - 1);
+        vec[e - 1].push_back(b - 1);
+    }
+ 
+    queue <int> bfs_queue;
+    bfs_queue.push(0);
+    vector <int> vector(n, 400001);
+    vector[0] = 0;
+ 
+    while (!bfs_queue.empty()) {
+        int v = bfs_queue.front();
+        bfs_queue.pop();
+        for (auto item : vec[v]) {
+            if (vector[item] == 400001) {
+                vector[item] = vector[v] + 1;
+                bfs_queue.push(item);
+            }
+        }
+    }
+ 
+    for (auto item : vector) {
+        cout << item << ' ';
+    }
+    return 0;
+}
