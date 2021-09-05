@@ -1,0 +1,48 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+void dfs(vector <vector <int>>& graph, vector <bool>& visited, vector <int>& way, int from) {
+    visited[from] = true;
+    for (int i = 0; i < graph[from].size(); i++) {
+        int to = graph[from][i];
+        if (!visited[to])
+            dfs(graph, visited, way, to);
+    }
+    way.push_back(from);
+};
+ 
+bool exist(vector <vector <int>>& graph, int from, int to) {
+    for (int i : graph[from])
+        if (i == to)
+            return true;
+    return false;
+};
+ 
+int main(){
+ 
+    freopen("hamiltonian.in", "r", stdin);
+    freopen("hamiltonian.out", "w", stdout);
+ 
+    int n, m;
+    cin >> n >> m;
+    vector<vector <int>> graph(n);
+    vector<bool> visited(n);
+    vector<int> way;
+    for (int i = 0; i < m; i++) {
+        int from, to;
+        cin >> from >> to;
+        graph[from - 1].push_back(to - 1);
+    }
+    for (int i = 0; i < n; i++)
+        if (!visited[i])
+            dfs(graph, visited, way, i);
+    for (int i = n - 1; i > 0; i--)
+        if (!exist(graph, way[i], way[i - 1])) {
+            cout << "NO";
+            return 0;
+        }
+    cout << "YES";
+    return 0;
+}
