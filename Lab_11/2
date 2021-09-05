@@ -1,0 +1,46 @@
+#include <algorithm>
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+void floyd (vector <vector<int> > &g, int V) {
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                g[i][j] = min(g[i][j], g[i][k] + g[k][j]);
+            }
+        }
+    }
+}
+ 
+int main () {
+ 
+    freopen("pathsg.in", "r", stdin);
+    freopen("pathsg.out", "w", stdout);
+ 
+    int V, E;
+    cin >> V >> E;
+ 
+    vector <vector <int> > g;
+    g.assign(V, vector <int>(V, 100000000));
+ 
+    for (int i = 0; i < E; i++) {
+        int from, to, weight;
+        cin >> from >> to >> weight;
+        g[from - 1][to - 1] = weight;
+    }
+ 
+    floyd(g, V);
+ 
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (i == j) {
+                g[i][j] = 0;
+            }
+            cout << g[i][j] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
