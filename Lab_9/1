@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+void dfs(vector<vector<int>> & g, vector<char>& visited, vector<int>& ans, int v)
+{
+    visited[v] = 'G';
+    for (int i = 0; i < g[v].size(); ++i)
+    {
+        int to = g[v][i];
+        if (visited[to] == 'W')
+            dfs(g, visited, ans, to);
+        else if (visited[to] == 'G')
+            visited[0] = 'E';
+    }
+    visited[v] = 'B';
+    ans.push_back(v);
+}
+int main()
+{
+    freopen("topsort.in", "r", stdin);
+    freopen("topsort.out", "w", stdout);
+ 
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> g(n + 1, vector<int>());
+    vector<char> visited(n + 1, 'W');
+    vector<int> ans;
+ 
+    int v1, v2;
+    for (int i = 0; i < m; i++)
+    {
+        cin >> v1 >> v2;
+        g[v1].push_back(v2);
+    }
+ 
+    for (int i = 1; i < n + 1; i++)
+    {
+        if (visited[i] == 'W')
+        {
+            dfs(g, visited, ans, i);
+        }
+    }
+    if (visited[0] == 'E')
+    {
+        cout << -1;
+        return 0;
+    }
+    else
+    {
+        for (int i = ans.size() - 1; i >= 0; i--)
+            cout << ans[i] << " ";
+    }
+    return 0;
+}
