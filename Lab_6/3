@@ -1,0 +1,150 @@
+#include <fstream>
+#include <vector>
+ 
+using namespace std;
+ 
+struct ListElement {
+    string k;
+    string val;
+    struct ListElement* n;
+    struct ListElement* p;
+    struct ListElement* nQueue;
+};
+ 
+class List {
+    ListElement* list;
+public:
+    List() {
+        list = new ListElement();
+        list->val = list->k = "";
+        list->nQueue = nullptr;
+    }
+    void insert(const string & k, const string & val, ListElement * head) {
+        ListElement *NewElement = exists(k);
+        if (exists(k) == nullptr) {
+            NewElement = new ListElement;
+            NewElement->k = k;
+            NewElement->val = val;
+            NewElement->nQueue = list->nQueue;
+            list->nQueue = NewElement;
+            ListElement *Tail = head->p;
+            Tail->n = NewElement;
+            head->p = NewElement;
+            NewElement->n = head;
+            NewElement->p = Tail;
+        }
+ 
+        else
+            NewElement->val = val;
+    }
+    void del(const string& k) {
+        ListElement *current_element = list;
+        while (current_element->nQueue != nullptr) {
+            if (current_element->nQueue->k == k) {
+                ListElement *to_delete = current_element->nQueue;
+                current_element->nQueue = current_element->nQueue->nQueue;
+                ListElement *p_element = to_delete->p, *NextNode = to_delete->n;
+                to_delete->p->n = NextNode;
+                to_delete->n->p = p_element;
+                delete to_delete;
+                return;
+            }
+ 
+            else
+                current_element = current_element->nQueue;
+        }
+    }
+    ListElement* exists(const string& k) {
+        ListElement *currentElement = list;
+        while (currentElement->nQueue != nullptr) {
+            if (currentElement->nQueue->k == k)
+                return currentElement->nQueue;
+            currentElement = currentElement->nQueue;
+        }
+        return nullptr;
+    }
+};
+ 
+class LinkedMap {
+    vector <List> LM;
+    ListElement *head;
+    static int GetElement(const string& k) {
+        int hash_value = 0;
+        for(char i : k) {
+            hash_value = 41 * hash_value + i;
+        }
+        return abs(hash_value % 1000001);
+    }
+public:
+    LinkedMap() {
+        LM.resize(1000001);
+        head = new ListElement;
+        head->p = head->n = head;
+    }
+    void insert(const string & k, const string & val) {
+        LM[GetElement(k)].insert(k, val, head);
+    }
+    void del(const string & k) {
+        LM[GetElement(k)].del(k);
+    }
+    string get(const string & k) {
+        ListElement *result = LM[GetElement(k)].exists(k);
+        if (result == nullptr)
+            return "none";
+        else
+            return result->val;
+    }
+    string next(const string & K) {
+        ListElement *result = LM[GetElement(K)].exists(K);
+        if (result == nullptr || result->n == head)
+            return "none";
+        else
+            return result->n->val;
+    }
+    string p(const string & k) {
+        ListElement *result = LM[GetElement(k)].exists(k);
+        if (result == nullptr || result->p == head) {
+            return "none";
+        }
+        else {
+            return result->p->val;
+        }
+    }
+};
+ 
+int main() {
+ 
+    ifstream fin("linkedmap.in");
+    ofstream fout("linkedmap.out");
+     
+    string k;
+    string val;
+    string command;
+    LinkedMap new_map;
+    while(fin >> command) {
+        if (command == "put") {
+            fin >> k >> val;
+            new_map.insert(k, val);
+        }
+ 
+        else if (command == "delete") {
+            fin >> k;
+            new_map.del(k);
+        }
+ 
+        else if (command == "get") {
+            fin >> k;
+            fout << new_map.get(k) << '\n';
+        }
+ 
+        else if (command == "next") {
+            fin >> k;
+            fout << new_map.next(k) << '\n';
+        }
+         
+        else if (command == "prev") {
+            fin >> k;
+            fout << new_map.p(k) << '\n';
+        }
+    }
+}
