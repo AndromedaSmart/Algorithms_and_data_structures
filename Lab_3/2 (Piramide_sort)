@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+ 
+void siftDown(vector <int> & a, int i, int n){
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
+    int k = i;
+    if (l < n && a[i] < a[l])
+        k = l;
+    if (r < n && a[k] < a[r])
+        k = r;
+    if (k != i) {
+        swap(a[i], a[k]);
+        siftDown(a, k, n);
+    }
+}
+ 
+void buildHeap(vector <int> & a, int n){
+    for (int i = n / 2; i >= 0; i--) {
+        siftDown(a, i, n);
+    }
+}
+ 
+void heapSort(vector <int> & a, int n){
+    buildHeap(a, n);
+    int heapSize = n;
+    for (int i = 0; i < n - 1; i++) {
+        swap(a[0], a[n - 1 - i]);
+        heapSize--;
+        siftDown(a, 0, heapSize);
+    }
+}
+ 
+int main(){
+    freopen("sort.in", "r", stdin);
+    freopen("sort.out", "w", stdout);
+ 
+    int n;
+    cin >> n;
+    vector <int> a(n, 0);
+ 
+    for (int i = 0; i < n; i++)
+        cin >> a[i];
+ 
+    heapSort(a, n);
+     
+    for (int i = 0; i < n; i++)
+        cout << a[i] << " ";
+ 
+    return 0;
+}
