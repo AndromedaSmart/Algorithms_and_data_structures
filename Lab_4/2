@@ -1,0 +1,47 @@
+#include <fstream>
+using namespace std;
+ 
+struct Queue {
+    long b;
+    Queue *last = NULL;
+};
+ 
+Queue* add(long b, Queue* last) {
+    Queue* B = (Queue*)malloc(sizeof(Queue));
+    B->b = b;
+    B->last = last;
+ 
+    return B;
+}
+ 
+int main() {
+    ifstream fin("queue.in");
+    ofstream fout("queue.out");
+    long n;
+    fin >> n;
+    char k;
+    long b;
+    Queue* Last = NULL;
+    for (int i = 0; i < n; i++) {
+        fin >> k;
+        if (k == '+') {
+            fin >> b;
+            Last = add(b, Last);
+        }
+ 
+        else {
+            Queue* First = Last;
+            if (First->last!=NULL) {
+                while (First->last->last != NULL)
+                    First = First->last;
+                fout << First->last->b << "\n";
+                First->last = NULL;
+            }
+ 
+            else {
+                fout << First->b << "\n";
+                Last=NULL;
+            }
+        }
+    }
+}
