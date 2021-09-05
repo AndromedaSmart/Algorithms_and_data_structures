@@ -1,0 +1,99 @@
+#include <iostream>
+ 
+using namespace std;
+ 
+struct Node{
+    int value = 0;
+    int max;
+    int min;
+ 
+    Node* left = nullptr;
+    Node* right = nullptr;
+    Node* parent = nullptr;
+};
+ 
+int main() {
+ 
+    freopen("check.in", "r", stdin);
+    freopen("check.out", "w", stdout);
+ 
+    int k, left, right;
+    cin >> k;
+ 
+    Node a[k];
+    for (int i = 0; i < k; i++) {
+        cin >> a[i].value >> left >> right;
+ 
+        if (left != 0) {
+            a[i].left = & a[left - 1];
+            a[i].left->parent = & a[i];
+        }
+ 
+        if (right != 0) {
+            a[i].right = & a[right - 1];
+            a[i].right->parent = & a[i];
+        }
+ 
+        if (i != 0) {
+            if (a[i].parent == nullptr) {
+                cout << "NO";
+ 
+                return 0;
+ 
+            }
+ 
+            if (a[i].parent->value == a[i].value) {
+                cout << "NO";
+ 
+                return 0;
+ 
+            }
+ 
+            else if (a[i].parent->value > a[i].value && a[i].parent->left != & a[i]) {
+                cout << "NO";
+ 
+                return 0;
+ 
+            }
+ 
+            else if (a[i].parent->value < a[i].value && a[i].parent->right != &a[i]) {
+                cout << "NO";
+ 
+                return 0;
+ 
+            }
+ 
+            else if (a[i].parent->value > a[i].value && a[i].value <= a[i].parent->min) {
+                cout << "NO";
+ 
+                return 0;
+ 
+            }
+ 
+            else if (a[i].parent->value < a[i].value && a[i].value >= a[i].parent->max) {
+                cout << "NO";
+ 
+                return 0;
+ 
+            }
+ 
+            if (a[i].parent->value > a[i].value) {
+                a[i].max = a[i].parent->value;
+                a[i].min = a[i].parent->min;
+            }
+ 
+            else if (a[i].parent->value < a[i].value) {
+                a[i].min = a[i].parent->value;
+                a[i].max = a[i].parent->max;
+            }
+        }
+ 
+        else {
+            a[i].min = -1000000000;
+            a[i].max = 1000000000;
+        }
+    }
+    cout << "YES";
+ 
+    return 0;
+}
