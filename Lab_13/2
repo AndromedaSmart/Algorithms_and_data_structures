@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+vector <int> GetPrefix(string & s) {
+    vector <int> r(s.length());
+    r[0] = 0;
+    for (int i = 1; i < s.length(); i++) {
+        int k = r[i - 1];
+        while (k > 0 && s[i] != s[k]) {
+            k = r[k - 1];
+        }
+        if (s[i] == s[k]) {
+            r[i] = k + 1;
+        }
+        else
+            {
+            r[i] = k;
+        }
+    }
+    return r;
+}
+ 
+vector <int> KMP(string &sub, string &str) {
+    int sl = sub.length();
+    int strl = str.length();
+    sub += '#' + str;
+    vector <int> result;
+    vector <int> prefix = GetPrefix(sub);
+    for(int i = 0; i < strl; i++) {
+        if (prefix[sl + i + 1] == sl) {
+            result.push_back(i + 2 - sl);
+        }
+    }
+    return result;
+}
+ 
+int main() {
+    freopen("search2.in", "r", stdin);
+    freopen("search2.out", "w", stdout);
+    string str, s;
+    cin >> s >> str;
+    vector <int> answer = KMP(s, str);
+    cout << answer.size() << endl;
+    for (int i : answer) {
+        cout << i << " ";
+    }
+    return 0;
+}
