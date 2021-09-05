@@ -1,0 +1,138 @@
+#include <iostream>
+#include <string>
+#include <vector>
+ 
+using namespace std;
+ 
+int GetElement(const string & k, int hashSize){
+    int hashCode = 0;
+    int help = 1;
+    for (char i : k){
+        hashCode += help * (int)i;
+        hashCode %= hashSize;
+        help = (help * 37) % hashSize;
+    }
+ 
+    return hashCode;
+}
+ 
+struct Set{
+    string k;
+    vector <vector <string> > element;
+    Set(){
+        element.resize(311);
+    }
+};
+ 
+struct multiMap{
+    vector < vector<Set> > set;
+    multiMap(){
+        set.resize(100003);
+    }
+};
+ 
+multiMap MultiMap;
+ 
+void put(const string & k, const string& elem){
+    int kHash = GetElement(k, 100003);
+    for (auto & i : MultiMap.set[kHash]){
+        if (i.k == k){
+            int elemHash = GetElement(elem, 311);
+            for (const auto & j : i.element[elemHash]){
+                if (j == elem)
+                    return;
+            }
+            i.element[elemHash].push_back(elem);
+            return;
+        }
+    }
+    Set* newSet = new Set;
+    newSet->k = k;
+    newSet->element[GetElement(elem, 311)].push_back(elem);
+    MultiMap.set[kHash].push_back(*newSet);
+    delete newSet;
+}
+ 
+void del(const string & k, const string & elem){
+    int kHash = GetElement(k, 100003);
+    for (auto & i : MultiMap.set[kHash]){
+        if (i.k == k){
+            int elemHash = GetElement(elem, 311);
+            for (int j = 0; j < i.element[elemHash].size(); j++){
+                if (i.element[elemHash][j] == elem) {
+                    i.element[elemHash].erase(i.element[elemHash].begin() + j);
+                    return;
+                }
+            }
+        }
+    }
+}
+ 
+void deleteAll(const string & k){
+    int kHash = GetElement(k, 100003);
+    for (auto & i : MultiMap.set[kHash]){
+        if (i.k == k){
+            for(auto & j : i.element){
+                while(!j.empty())
+                    j.pop_back();
+            }
+            return;
+        }
+    }
+}
+ 
+vector <string> Get (const string & k){
+    vector <string> Result;
+    int kHash = GetElement(k, 100003);
+    for (auto & i : MultiMap.set[kHash]){
+        if (i.k == k){
+            for(auto & j : i.element){
+                for(const auto & k : j) {
+                    Result.push_back(k);
+                }
+            }
+            return Result;
+        }
+    }
+    return Result;
+}
+ 
+int main() {
+ 
+    freopen("multimap.in", "r", stdin);
+    freopen("multimap.out", "w", stdout);
+ 
+    while(!cin.eof()) {
+        string Com;
+        cin >> Com;
+        if (Com == "put") {
+            string one, two;
+            cin >> one >> two;
+            put(one, two);
+        }
+ 
+        if (Com == "delete") {
+            string one, two;
+            cin >> one >> two;
+            del(one, two);
+        }
+ 
+        if (Com == "deleteall") {
+            string one;
+            cin >> one;
+            deleteAll(one);
+        }
+ 
+        if (Com == "get") {
+            string one;
+            cin >> one;
+            vector <string> getA = Get(one);
+            cout << getA.size() << ' ';
+            for (const string & i : getA)
+                cout << i << ' ';
+            cout << "\n";
+        }
+    }
+ 
+    return 0;
+}
