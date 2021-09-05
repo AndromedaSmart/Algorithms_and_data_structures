@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+ 
+using namespace std;
+ 
+int k;
+ 
+void findOrderStatistic(vector<int> &arr, int left, int right) {
+    if (left < right) {
+        int i = left;
+        int j = right;
+        int pivot = arr[(i + j) / 2];
+ 
+        while (i <= j) {
+ 
+            while (arr[i] < pivot)
+                i++;
+ 
+            while (arr[j] > pivot)
+                j--;
+            if (i <= j) {
+                swap(arr[i], arr[j]);
+                i++;
+                j--;
+            }
+        }
+ 
+        if (k <= j)
+            findOrderStatistic(arr, left, j);
+        else
+            findOrderStatistic(arr, i, right);
+    }
+}
+ 
+int main() {
+    int n, A, B, C;
+    cin >> n >> k;
+    k--;
+    vector <int> arr(n, 0);
+    cin >> A >> B >> C >> arr[0] >> arr[1];
+ 
+    for (int i = 2; i < n; i++)
+        arr[i] = A * arr[i - 2] + B * arr[i - 1] + C;
+ 
+    findOrderStatistic(arr, 0, arr.size() - 1);
+ 
+    cout << arr[k];
+    return 0;
+}
