@@ -1,0 +1,55 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+ 
+using namespace std;
+ 
+vector <int> Findelem (vector <int> a) {
+    int n = a.size();
+    int b[n - 1];
+    int previous[n - 1];
+ 
+    for (int i = 0; i < n; i++)
+    {
+        b[i] = 1;
+        previous[i] = -1;
+        for (int j = 0; j < i; j++)
+            if ( a[j] < a[i] && b[j] + 1 > b[i])
+            {
+                b[i] = b[j] + 1;
+                previous[i] = j;
+            }
+    }
+    int pos = 0;
+    int l = b[0];
+    for(int i = 0; i < n; i++)
+        if (b[i] > l)
+        {
+            pos = i;
+            l = b[i];
+        }
+    vector<int> ans;
+    while(pos != -1)
+    {
+        ans.push_back(a[pos]);
+        pos = previous[pos];
+    }
+    return ans;
+}
+int main() {
+ 
+    int n, a;
+    cin >> n;
+    vector <int> rex;
+    for (int i = 0; i < n; i++)
+    {
+        cin >> a;
+        rex.push_back(a);
+    }
+    vector <int> ans = Findelem(rex);
+    reverse(ans.begin(), ans.end());
+    cout << ans.size() << endl;
+    for (int i: ans)
+        cout << i << " ";
+    return 0;
+}
