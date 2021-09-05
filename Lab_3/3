@@ -1,0 +1,56 @@
+#include <iostream>
+#include <vector>
+#include <string>
+ 
+using namespace std;
+ 
+ 
+void radixsort (vector <string> & a, int m, int k) {
+ 
+    for (int i = m - 1; i >= m - k; i--) {
+ 
+        vector <int> alphabet(26, 0); // 26 букв в латинском алфавите (строчные)
+        int x = a.size(); // Записываем размер массива
+        for (int j = 0; j < x; j++) {
+            alphabet[a[j][i] - 'a']++;
+        }
+ 
+        int temp, count = 0;
+        x = alphabet.size();
+        for (int j = 0; j < x; j++) {
+            temp = alphabet[j];
+            alphabet[j] = count;
+            count += temp;
+        }
+ 
+        vector <string> result(a.size(), "");
+        x = a.size();
+        for (int j = 0; j < x; j++) {
+            result[ alphabet[a[j][i] - 'a'] ] = a[j];
+            alphabet[a[j][i] - 'a']++;
+        }
+        a = result;
+        alphabet.clear();
+        result.clear();
+    }
+}
+ 
+int main(){
+    freopen("radixsort.in", "r", stdin);
+    freopen("radixsort.out", "w", stdout);
+ 
+    int n, m, k;
+    cin >> n >> m >> k;
+    vector <string> a(n, "");
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+ 
+    radixsort(a, m, k);
+ 
+    for (int i = 0; i < n; i++) {
+        cout << a[i] << endl;
+    }
+     
+    return 0;
+}
